@@ -1,17 +1,18 @@
 import json,os,urllib.request as u
 U=os.environ["MAKEFUN_ENV_URL"]
-def P(p,b):
- q=u.Request(U+p,data=json.dumps(b).encode(),headers={"content-type":"application/json"})
- with u.urlopen(q) as r:return json.load(r)
-V=(0,100,320,330,500,900,0)
-N=(-33,-31,-18,-14,14,18,31,33)
-X=(-17,-15,15,17)
-Y=(-16,-1,1,16)
+def P(p,b):return json.load(u.urlopen(u.Request(U+p,data=json.dumps(b).encode())))
+V=0,100,320,330,500,900,0
+N=-33,-31,-18,-14,14,18,31,33
+X=-17,-15,15,17
+Y=-16,-1,1,16
 G=X+Y
 M=1e5
 T={}
 C=[0]
-class A(Exception):pass
+I=[0]*40
+def W():
+ C[0]+=1
+ if C[0]>15e4:1/0
 def E(b):
  t=0
  for i,p in enumerate(b):
@@ -21,16 +22,16 @@ def E(b):
    t+=x*p//a
  return t
 def K(b,q,w):
- for d in(-15,-17)if w>0 else(15,17):
+ for d in(-15*w,-17*w):
   t=q+d
   if not t&136 and b[t]==w:return 1
- for s,v,l in((N,2,0),(G,6,0),(X,3,1),(Y,4,1)):
+ for s,v,l in(N,2,0),(G,6,0),(X,3,1),(Y,4,1):
   for d in s:
    t=q+d
    while not t&136:
     p=b[t]
     if p:
-     if p==v*w or p==5*w and (l or v>5):return 1
+     if p==v*w or p==5*w and(l or v>5):return 1
      break
     if not l:break
     t+=d
@@ -45,10 +46,10 @@ def g(b,s,a,e,c=0):
   if z==1:
    d=16*s;P7,r0=(7,1)if s>0 else(0,6);t=f+d
    if not t&136 and not b[t]:
-    if (t>>4)==P7:m.append((f,t,5))
+    if(t>>4)==P7:m.append((f,t,5))
     elif not c:
      m.append((f,t,0))
-     if (f>>4)==r0:
+     if(f>>4)==r0:
       y=f+2*d
       if not b[y]:m.append((f,y,0))
    for o in (d-1,d+1):
@@ -56,7 +57,7 @@ def g(b,s,a,e,c=0):
     if t&136:continue
     q=b[t]
     if q*s<0:
-     if (t>>4)==P7:m.append((f,t,5))
+     if(t>>4)==P7:m.append((f,t,5))
      else:m.append((f,t,0))
     elif t==e:m.append((f,t,0))
   else:
@@ -70,30 +71,30 @@ def g(b,s,a,e,c=0):
      if z%4==2:break
      t+=d
    if z==6 and not c:
-    for k,r,j,x in(((4,7,6,1),(4,0,2,2))if s>0 else((116,119,118,4),(116,112,114,8))):
-     if a&x and all(not b[h] for h in range(min(k,r)+1,max(k,r))) and all(not K(b,h,-s) for h in (k,k+(j>k)*2-1,j)):m.append((k,j,0))
+    for k,r,j,x in((4,7,6,1),(4,0,2,2))if s>0 else((116,119,118,4),(116,112,114,8)):
+     if a&x and all(not b[h] for h in range(min(k,r)+1,max(k,r))) and all(not K(b,h,-s) for h in(k,(k+j)//2,j)):m.append((k,j,0))
  return m
 def D(S,m):
  b,w,v,a,e=S;f,t,r=m;n=b[:];p=n[f]
- if abs(p)==1 and t==e and not n[t]:n[f&112|t&7]=0
+ if p*p==1 and t==e and not n[t]:n[f&112|t&7]=0
  n[t]=r*(p>0 or -1)or p;n[f]=0
  if p*p==36 and abs(t-f)==2:
   q,o=(f+3,f+1) if t>f else (f-4,f-1);n[o]=n[q];n[q]=0
  c=a
  if p*p==36:c&=~(1|2)if p>0 else~(4|8);w,v=(t,v)if p>0 else(w,t)
- for q,z in ((0,2),(7,1),(112,8),(119,4)):
+ for q,z in(0,2),(7,1),(112,8),(119,4):
   if f==q or t==q:c&=~z
- return(n,w,v,c,(f+t)//2 if abs(p)==1 and abs(t-f)==32 else -1)
+ return(n,w,v,c,(f+t)//2 if p*p==1 and abs(t-f)==32 else -1)
 def Q(S,s,a,e):
- o,w,v,c,p=S;C[0]+=1
- if C[0]>1e5:raise A
+ o,w,v,c,p=S;W()
  k=L(S,s)
  if not k:
   t=E(o)*s
   if t>=e:return e
   if t>a:a=t
  j=0
- for x in g(o,s,c,p,0 if k else 1):
+ for x in sorted(g(o,s,c,p,1-k),key=lambda z:-abs(o[z[1]])):
+  if not k and o[x[1]]and abs(o[x[1]])<abs(o[x[0]])and K(o,x[1],-s):continue
   S2=D(S,x)
   if L(S2,s):continue
   j+=1
@@ -102,8 +103,7 @@ def Q(S,s,a,e):
   if a>=e:break
  return-M if k and not j else a
 def R(S,s,d,a,e):
- o,w,v,c,p=S;C[0]+=1
- if C[0]>1e5:raise A
+ o,w,v,c,p=S;W()
  k=(tuple(o),s,c,p)
  x=T.get(k);t=None
  if x:
@@ -115,7 +115,7 @@ def R(S,s,d,a,e):
   z=-R((o,w,v,c,-1),-s,d-3,-e,-a)
   if z>=e:return e
  m=g(o,s,c,p)
- m.sort(key=lambda z:((z!=t),-abs(o[z[1]])))
+ m.sort(key=lambda z:(z!=t,z!=I[d],-abs(o[z[1]])))
  l=a;u=-M;n=None;j=0
  for z in m:
   S2=D(S,z)
@@ -124,7 +124,9 @@ def R(S,s,d,a,e):
   if j>1 and a<v<e:v=-R(S2,-s,d-1,-e,-a)
   if v>u:u=v;n=z
   if u>a:a=u
-  if a>=e:break
+  if a>=e:
+   if not o[z[1]]:I[d]=z
+   break
  if not j:return-M if y else 0
  if l<u<e:T[k]=(d,u,0,n)
  return u
@@ -142,7 +144,7 @@ def F(f):
  return b,w,v,s,c,e
 def Z(f,l):
  b,w,v,s,c,e=F(f);S=(b,w,v,c,e);T.clear()
- m=[(H(u),H(u[2:]),len(u)>4 and "nbrq".index(u[4])+2 or 0) for u in l];C[0]=0;B=None
+ m=[(H(u),H(u[2:]),u[4:]and"nbrq".index(u[4])+2 or 0) for u in l];C[0]=0;B=None
  for d in range(40):
   try:
    y=-M;n=None
@@ -152,11 +154,11 @@ def Z(f,l):
     z=-R(S2,-s,d,-M,M)
     if z>y:y=z;n=x
    B=n
-  except A:break
+  except Exception:break
  if not B:return l[0]
  f,t,r=B;u="%c%d%c%d"%(97+(f&7),f//16+1,97+(t&7),t//16+1)
  return u+"nbrq"[r-2:r-1]if r else u
 while 1:
  J=P("/game",{})
  if J["status"]=="done":break
- while J["status"]=="your_move":J=P("/move",{"game":J["game"],"move":Z(J["fen"],J["legal_moves"])})
+ if J["status"]=="your_move":J=P("/move",{"game":J["game"],"move":Z(J["fen"],J["legal_moves"])})
