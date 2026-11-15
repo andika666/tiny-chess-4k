@@ -148,6 +148,7 @@ def Z(f,l,h):
     if L(S2,s):continue
     z=-R(S2,-s,d,-M,M)
     if A.get(k)==x:z=25*((q<0)-(q>0))
+    if b[x[0]]%6==0 and(x[1]>>4)-(x[0]>>4)==s:z-=25
     if z>y:y=z;n=x
    B=n
   except Exception:break
